@@ -201,11 +201,11 @@ public class Concesionario {
     public void exportCarsToCSV() {
         String archivoCoches = "coches.csv";
 
-        try (FileWriter writer = new FileWriter(archivoCoches)) {
-            writer.write("ID;Matrícula;Marca;Modelo;Color\n");
+        try (FileWriter fileWriter = new FileWriter(archivoCoches)) {
+            fileWriter.write("ID;Matricula;Marca;Modelo;Color\n");
 
             for (Coche coche : listaCoche) {
-                writer.write(coche.getId() + ";" +
+                fileWriter.write(coche.getId() + ";" +
                         coche.getMatricula() + ";" +
                         coche.getMarca() + ";" +
                         coche.getModelo() + ";" +
