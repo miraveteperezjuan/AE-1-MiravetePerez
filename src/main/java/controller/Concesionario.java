@@ -13,11 +13,12 @@ public class Concesionario {
     private File file;
 
     public Concesionario() {
+
         iniciarCoches();
     }
 
     public void opciones() {
-        System.out.println("\n--- Parking ---");
+        System.out.println("\n--- Concesionario ---");
         System.out.println("1. Añadir nuevo coche");
         System.out.println("2. Eliminar coche por ID");
         System.out.println("3. Buscar coche por ID");
@@ -127,14 +128,16 @@ public class Concesionario {
     public void searchCarById() {
 
         int id = getValidId(false);
+        Coche buscarCoche = null;
 
-        Coche buscarCoche = listaCoche.stream()
-                .filter(coche -> coche.getId() == id)
-                .findFirst()
-                .orElse(null);
-
+        for (Coche coche : listaCoche) {
+            if (coche.getId() == id) {
+                buscarCoche = coche;
+                break;
+            }
+        }
         if (buscarCoche != null) {
-            System.out.println("Car encontrado:");
+            System.out.println("Coche encontrado:");
             System.out.println(buscarCoche);
         } else {
             System.out.println("No hay ningun coche asociado a ese ID");
@@ -175,14 +178,19 @@ public class Concesionario {
     }
 
     public boolean isIdExists(int id) {
-        return listaCoche.stream().anyMatch(coche -> coche.getId() == id);
+        for (Coche coche : listaCoche) {
+            if (coche.getId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getValidLicensePlate() {
         String matricula;
 
         while (true) {
-            System.out.print("Ingresa una Matrícula única:: ");
+            System.out.print("Ingresa una Matrícula única: ");
             matricula = scanner.nextLine().trim();
 
             if (isLicensePlateExists(matricula)) {
@@ -195,20 +203,25 @@ public class Concesionario {
     }
 
     public boolean isLicensePlateExists(String matricula) {
-        return listaCoche.stream().anyMatch(coche -> coche.getMatricula().equalsIgnoreCase(matricula));
+        for (Coche coche : listaCoche) {
+            if (coche.getMatricula().equalsIgnoreCase(matricula)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void exportCarsToCSV() {
         String archivoCoches = "coches.csv";
 
         try (FileWriter fileWriter = new FileWriter(archivoCoches)) {
-            fileWriter.write("ID;Matricula;Marca;Modelo;Color\n");
+            fileWriter.write("ID,Matricula,Marca,Modelo,Color\n");
 
             for (Coche coche : listaCoche) {
-                fileWriter.write(coche.getId() + ";" +
-                        coche.getMatricula() + ";" +
-                        coche.getMarca() + ";" +
-                        coche.getModelo() + ";" +
+                fileWriter.write(coche.getId() + "," +
+                        coche.getMatricula() + "," +
+                        coche.getMarca() + "," +
+                        coche.getModelo() + "," +
                         coche.getColor() + "\n");
             }
 
