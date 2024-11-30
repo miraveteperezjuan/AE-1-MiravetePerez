@@ -13,7 +13,6 @@ public class Concesionario {
     private File file;
 
     public Concesionario() {
-
         iniciarCoches();
     }
 
@@ -65,6 +64,7 @@ public class Concesionario {
     }
 
     public void iniciarCoches() {
+
         file = new File("coches.dat");
 
         if (file.exists()) {
@@ -110,7 +110,7 @@ public class Concesionario {
         String color = scanner.nextLine();
 
         listaCoche.add(new Coche(id, matricula, marca, modelo, color));
-        System.out.println("Car añadido con exito");
+        System.out.println("Coche añadido con exito");
     }
 
     public void deleteCarById() {
@@ -212,9 +212,8 @@ public class Concesionario {
     }
 
     public void exportCarsToCSV() {
-        String archivoCoches = "coches.csv";
 
-        try (FileWriter fileWriter = new FileWriter(archivoCoches)) {
+        try (FileWriter fileWriter = new FileWriter("src/main/java/resources/coches.csv")) {
             fileWriter.write("ID,Matricula,Marca,Modelo,Color\n");
 
             for (Coche coche : listaCoche) {
@@ -225,7 +224,7 @@ public class Concesionario {
                         coche.getColor() + "\n");
             }
 
-            System.out.println("Coches exportados a " + archivoCoches + " con éxito");
+            System.out.println("Coches exportados con éxito");
         } catch (IOException e) {
             System.out.println("Error en la exportación al CSV: " + e.getMessage());
         }
