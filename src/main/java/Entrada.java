@@ -6,7 +6,7 @@ public class Entrada {
 
     public static void main(String[] args) {
         Concesionario concesionario = new Concesionario();
-        concesionario.menu();
+        concesionario.menu(); //Llama al menu
     }
 
 }

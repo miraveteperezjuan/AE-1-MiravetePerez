@@ -8,14 +8,16 @@ import java.util.Scanner;
 
 public class Concesionario {
 
-    private ArrayList<Coche> listaCoche;
+    private ArrayList<Coche> listaCoche; // Lista para almacenar los objetos Coche
     private Scanner scanner;
-    private File file;
+    private File file; // Archivo para almacenar los datos de los coches
 
     public Concesionario() {
+        // Inicializa los coches al crear una instancia de Concesionario
         iniciarCoches();
     }
 
+    // Muestra las opciones del menú al usuario
     public void opciones() {
         System.out.println("\n--- Concesionario ---");
         System.out.println("1. Añadir nuevo coche");
@@ -27,6 +29,7 @@ public class Concesionario {
         System.out.print("Elige una opción: ");
     }
 
+    // Controla el menú y la interacción con el usuario
     public void menu() {
         int option;
         scanner = new Scanner(System.in);
@@ -38,19 +41,19 @@ public class Concesionario {
 
             switch (option) {
                 case 1:
-                    addCar();
+                    addCar(); // Añadir nuevo coche
                     break;
                 case 2:
-                    deleteCarById();
+                    deleteCarById(); // Eliminar coche por ID
                     break;
                 case 3:
-                    searchCarById();
+                    searchCarById(); // Buscar coche por ID
                     break;
                 case 4:
-                    listCars();
+                    listCars(); // Listar todos los coches
                     break;
                 case 5:
-                    exportCarsToCSV();
+                    exportCarsToCSV(); // Exportar los coches a CSV
                     break;
                 case 6:
                     System.out.println("Guardando datos...");
@@ -64,20 +67,22 @@ public class Concesionario {
     }
 
     public void iniciarCoches() {
-
+        // Inicializa la lista de coches desde un archivo o crea una lista vacía si el archivo no existe
         file = new File("coches.dat");
 
         if (file.exists()) {
             System.out.println("Cargando los coches del archivo..");
-            loadCarsFromFile(file);
+            loadCarsFromFile(file); // Carga los coches del archivo
         } else {
-            listaCoche = new ArrayList<Coche>();
+            listaCoche = new ArrayList<Coche>(); // Crea una lista vacía
             System.out.println("Archivo no encontrado. Comenzando con una lista vacía.");
         }
     }
 
+    // Carga los coches desde un archivo
     public void loadCarsFromFile(File file) {
         try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
+            // Lee el objeto desde el archivo
             listaCoche = (ArrayList<Coche>) objectInputStream.readObject();
             System.out.println("Coches cargados correctamente");
         } catch (IOException | ClassNotFoundException e) {
@@ -85,15 +90,17 @@ public class Concesionario {
         }
     }
 
+    // Guarda los coches en un archivo
     public void saveCarsToFile() {
         try (ObjectOutputStream objectInputStream = new ObjectOutputStream(new FileOutputStream("coches.dat"))) {
-            objectInputStream.writeObject(listaCoche);
+            objectInputStream.writeObject(listaCoche); // Escribe el objeto en el archivo
             System.out.println("Coches añadidos sin problema\n");
         } catch (IOException e) {
             System.out.println("Error al guardar el archivo: " + e.getMessage() + "\n");
         }
     }
 
+    // Añade un nuevo coche a la lista
     public void addCar() {
 
         int id = getValidId(true);
@@ -109,13 +116,16 @@ public class Concesionario {
         System.out.print("Color: ");
         String color = scanner.nextLine();
 
+        // Añade el coche a la lista
         listaCoche.add(new Coche(id, matricula, marca, modelo, color));
         System.out.println("Coche añadido con exito");
     }
 
+    // Elimina un coche de la lista por su ID
     public void deleteCarById() {
         int id = getValidId(false);
 
+        // Elimina el coche si existe con una expresión Lambda
         boolean borrarCoche = listaCoche.removeIf(coche -> coche.getId() == id);
 
         if (borrarCoche) {
@@ -125,14 +135,15 @@ public class Concesionario {
         }
     }
 
+    // Busca un coche por su ID
     public void searchCarById() {
 
-        int id = getValidId(false);
+        int id = getValidId(false); // Obtiene un ID válido
         Coche buscarCoche = null;
 
         for (Coche coche : listaCoche) {
             if (coche.getId() == id) {
-                buscarCoche = coche;
+                buscarCoche = coche; // Busca el coche por ID
                 break;
             }
         }
@@ -144,6 +155,7 @@ public class Concesionario {
         }
     }
 
+    // Lista todos los coches
     public void listCars() {
         if (listaCoche.isEmpty()) {
             System.out.println("No hay coches en el concesionario");
@@ -155,6 +167,7 @@ public class Concesionario {
         }
     }
 
+    // Obtiene un ID válido (y único si nuevoCoche es true)
     public int getValidId(boolean nuevoCoche) {
         while (true) {
             System.out.print("Ingresa un ID válido (número): ");
@@ -165,10 +178,10 @@ public class Concesionario {
                     if (isIdExists(valido)) {
                         System.out.println("El ID ya existe. Por favor, ingresa un ID diferente.\n");
                     } else {
-                        return valido;
+                        return valido; // Retorna un ID único
                     }
                 } else {
-                    return valido;
+                    return valido; // Retorna un ID válido
                 }
             } else {
                 System.out.println("Entrada no válida. Por favor, ingresa un número válido.\n");
@@ -177,6 +190,7 @@ public class Concesionario {
         }
     }
 
+    // Verifica si un ID ya existe en la lista
     public boolean isIdExists(int id) {
         for (Coche coche : listaCoche) {
             if (coche.getId() == id) {
@@ -186,6 +200,7 @@ public class Concesionario {
         return false;
     }
 
+    // Obtiene una matrícula válida y única
     public String getValidLicensePlate() {
         String matricula;
 
@@ -193,29 +208,34 @@ public class Concesionario {
             System.out.print("Ingresa una Matrícula única: ");
             matricula = scanner.nextLine().trim();
 
+            // Verifica si la matrícula ya existe en la lista de coches
             if (isLicensePlateExists(matricula)) {
                 System.out.println("La matricula ya existe. Introduce otra distinta.\n");
             } else {
                 break;
             }
         }
-        return matricula;
+        return matricula; // Retorna la matrícula válida y única
     }
 
+    // Verifica si una matrícula ya existe en la lista
     public boolean isLicensePlateExists(String matricula) {
         for (Coche coche : listaCoche) {
             if (coche.getMatricula().equalsIgnoreCase(matricula)) {
-                return true;
+                return true;  // Si encuentra una coincidencia, retorna true
             }
         }
-        return false;
+        return false; // Si no encuentra coincidencias, retorna false
     }
 
+    // Exporta los coches a un archivo CSV
     public void exportCarsToCSV() {
 
         try (FileWriter fileWriter = new FileWriter("src/main/java/resources/coches.csv")) {
+            // Escribe la cabecera del archivo CSV
             fileWriter.write("ID,Matricula,Marca,Modelo,Color\n");
 
+            // Recorre la lista de coches y escribe cada coche en el archivo CSV for (Coche coche : listaCoche)
             for (Coche coche : listaCoche) {
                 fileWriter.write(coche.getId() + "," +
                         coche.getMatricula() + "," +
@@ -223,7 +243,6 @@ public class Concesionario {
                         coche.getModelo() + "," +
                         coche.getColor() + "\n");
             }
-
             System.out.println("Coches exportados con éxito");
         } catch (IOException e) {
             System.out.println("Error en la exportación al CSV: " + e.getMessage());
